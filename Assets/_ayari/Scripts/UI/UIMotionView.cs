@@ -4,13 +4,26 @@ using UnityEngine.UI;
 
 public class UIMotionView : MonoBehaviour
 {
-    [SerializeField] private RawImage _hoverImage;
+    [SerializeField] private GameObject _hoverPanel;
     [SerializeField] private Slider _slider;
 
     private void Awake()
     {
-        // ObjectにEventTriggerコンポーネントを追加する
-        var trigger = _hoverImage.gameObject.AddComponent<EventTrigger>();
+        // SliderにEventTriggerコンポーネントを追加する
+        _hoverPanel.gameObject.AddComponent<EventTrigger>();
+
+        // 処理を登録
+        RegisterPointerEnter();
+        RegisterPointerExit();
+    }
+
+    /// <summary>
+    /// PointerEnterイベントに処理を登録する
+    /// </summary>
+    private void RegisterPointerEnter()
+    {
+        // PanelにEventTriggerコンポーネントを追加する
+        var hoverTrigger = _hoverPanel.GetComponent<EventTrigger>();
 
         // 登録するイベントを設定する
         var entry = new EventTrigger.Entry {eventID = EventTriggerType.PointerEnter};
@@ -21,15 +34,27 @@ public class UIMotionView : MonoBehaviour
             Debug.Log("PointerEnter");
         });
 
-        trigger.triggers.Add(entry);
+        hoverTrigger.triggers.Add(entry);
+    }
 
-        entry = new EventTrigger.Entry {eventID = EventTriggerType.PointerExit};
+    /// <summary>
+    /// PointerExitイベントに処理を登録する
+    /// </summary>
+    private void RegisterPointerExit()
+    {
+        // PanelにEventTriggerコンポーネントを追加する
+        var hoverTrigger = _hoverPanel.GetComponent<EventTrigger>();
+
+        // 登録するイベントを設定する
+        var entry = new EventTrigger.Entry {eventID = EventTriggerType.PointerExit};
+
         entry.callback.AddListener((data) =>
         {
             HideSlider();
             Debug.Log("PointerExit");
         });
-        trigger.triggers.Add(entry);
+
+        hoverTrigger.triggers.Add(entry);
     }
 
     private void HideSlider()
